@@ -101,20 +101,22 @@ function App() {
         </label>
       </div>
 
-      <div className="gallery">
-        {videos.map((video) => {
-          console.log(video);
-          if (video.name === ".emptyFolderPlaceholder") return null;
+      {/* <div className="frame"> */}
+        <div className="gallery">
+          {videos.map((video) => {
+            console.log(video);
+            if (video.name === ".emptyFolderPlaceholder") return null;
 
-          return (
-            // <div className="video-wrapper">
+            return (
+              // <div className="video-wrapper">
               <video controls className="video">
                 <source src={CDNURL + video.name} type="video/mp4" />
               </video>
-            // </div>
-          );
-        })}
-      </div>
+              // </div>
+            );
+          })}
+        </div>
+      {/* </div> */}
     </div>
   );
 }
