@@ -43,7 +43,8 @@ function App() {
 
     const { error } = await supabaseClient.storage
       .from("videos")
-      .upload(uuidv4() + "-" + videoFile.name, videoFile);
+      // .upload(uuidv4() + "-" + videoFile.name, videoFile);
+      .upload(uuidv4() + '.mp4', videoFile);
 
     setUrl(uuidv4() + "-" + videoFile.name);
     console.log("upload file: ", uuidv4() + "-" + videoFile.name);
@@ -75,22 +76,33 @@ function App() {
     if (error) console.log("error: ", error.message);
   }
 
-  console.log(videos);
+  // console.log(videos);
 
   return (
     <div className="container">
-      <h1 className="title">VideoFeed</h1>
-      <div className="">
-        <label for="file">
-          Upload your video here! <br />
+      {/* <h1 className="title">VideoFeed</h1> */}
+      {/* <label for="file">
+        Upload your video here! <br />
+        <input
+        id="file"
+        type="file"
+        accept="video/mp4"
+        onChange={(e) => uploadFile(e)}
+        className="fileInput"
+        />
+      </label> */}
+
+      <div className="wrapper">
+        <label className="upload_cover">
           <input
-            id="file"
             type="file"
+            id="upload_input"
             accept="video/mp4"
             onChange={(e) => uploadFile(e)}
-            className="fileInput"
           />
+          <span class="upload_icon">➕</span>
         </label>
+        <p className="msg">Upload your video here !</p>
       </div>
 
       <div className="gallery">

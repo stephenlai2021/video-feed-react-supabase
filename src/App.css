@@ -21,14 +21,39 @@
   -moz-box-shadow: 4px 3px 5px 0px rgba(0, 0, 0, 0.3);
 }
 
-.frame {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+.msg {
+  margin-top: 10px;
 }
 
-.fileInput {
-  border: 1px solid;
+.wrapper {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid; */
+}
+
+.upload_cover {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  background: #efefef;
+  border-radius: 50%;
+}
+
+#upload_input {
+  display: none;
+}
+
+.upload_icon {
+  font-weight: bold;
+  font-size: 180%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 645px) {
