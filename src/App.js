@@ -8,6 +8,7 @@ const CDNURL =
 
 function App() {
   const [videos, setVideos] = useState([]); // [video1, video2, video3]
+  const [fileType, setFileType] = useState(null);
   const [blob, setBlob] = useState(null);
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState(null);
@@ -33,28 +34,35 @@ function App() {
 
   async function uploadFile(e) {
     const videoFile = e.target.files[0];
-    console.log("file: ", videoFile.name);
+    console.log("file: ", videoFile);
+    console.log("filename: ", videoFile.name);
+
+    let fileType = videoFile.type.substring(0, videoFile.type.lastIndexOf("/"));
+    setFileType(fileType);
+    console.log("file type: ", fileType);
+
+    let fileExtension = videoFile.name.split(".").pop();
+    console.log("filename extension: ", fileExtension);
 
     if (!videoFile) {
       return;
     } else {
-      console.log("Upload!");
+      const { error } = await supabaseClient.storage
+        .from("videos")
+        .upload(uuidv4() + "." + fileExtension, videoFile,
+          {
+            cacheControl: "3600",
+            upsert: true,
+          }
+        );
+
+      if (error) {
+        console.log(error);
+        alert("Error uploading file to Supabase");
+      }
+
+      console.log('file upload successfully !')
     }
-
-    const { error } = await supabaseClient.storage
-      .from("videos")
-      // .upload(uuidv4() + "-" + videoFile.name, videoFile);
-      .upload(uuidv4() + '.mp4', videoFile);
-
-    setUrl(uuidv4() + "-" + videoFile.name);
-    console.log("upload file: ", uuidv4() + "-" + videoFile.name);
-
-    if (error) {
-      console.log(error);
-      alert("Error uploading file to Supabase");
-    }
-
-    getVideos();
   }
 
   async function downloadFile(file) {
@@ -76,45 +84,47 @@ function App() {
     if (error) console.log("error: ", error.message);
   }
 
-  // console.log(videos);
-
   return (
     <div className="container">
-      {/* <h1 className="title">VideoFeed</h1> */}
-      {/* <label for="file">
-        Upload your video here! <br />
-        <input
-        id="file"
-        type="file"
-        accept="video/mp4"
-        onChange={(e) => uploadFile(e)}
-        className="fileInput"
-        />
-      </label> */}
-
       <div className="wrapper">
         <label className="upload_cover">
           <input
             type="file"
             id="upload_input"
-            accept="video/mp4"
+            accept="video/*,image/*"
             onChange={(e) => uploadFile(e)}
           />
-          <span class="upload_icon">➕</span>
+          <span className="upload_icon">➕</span>
         </label>
         <p className="msg">Upload your video here !</p>
       </div>
 
       <div className="gallery">
         {videos.map((video) => {
-          console.log(video);
-          if (video.name === ".emptyFolderPlaceholder") return null;
+          if (video.name.split(".").pop() === "mp4") {
+            return (
+              <video controls className="video" key={video.name}>
+                <source src={CDNURL + video.name} type="video/mp4" />
+              </video>
+            );
+          }
 
-          return (
-            <video controls className="video">
-              <source src={CDNURL + video.name} type="video/mp4" />
-            </video>
-          );
+          if (
+            video.name.split(".").pop() === "jpg" ||
+            video.name.split(".").pop() === "png" ||
+            video.name.split(".").pop() === "gif"
+          ) {
+            return (
+              <a href={CDNURL + video.name} target="_blank" download>
+                <img
+                  className="image"
+                  src={CDNURL + video.name}
+                  type="image/*"
+                  key={video.name}
+                />
+              </a>
+            );
+          }
         })}
       </div>
     </div>
