@@ -1,15 +1,13 @@
-import logo from "./logo.svg";
 import { useState, useEffect } from "react";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Form, Row, Col, Card } from "react-bootstrap";
-import { createClient } from "@supabase/supabase-js";
+// import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
+import { supabaseClient } from "./supabase/config";
 
-const supabase = createClient(
-  "https://itzgmdgndusfvggjclwk.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0emdtZGduZHVzZnZnZ2pjbHdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzA2NTgwNDYsImV4cCI6MTk4NjIzNDA0Nn0.pNt5W8ccp8TnrKhRaDzYPuVjKrcazjWh06QUMZ0ZC90"
-);
+// const supabase = createClient(
+//   "https://itzgmdgndusfvggjclwk.supabase.co",
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0emdtZGduZHVzZnZnZ2pjbHdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzA2NTgwNDYsImV4cCI6MTk4NjIzNDA0Nn0.pNt5W8ccp8TnrKhRaDzYPuVjKrcazjWh06QUMZ0ZC90"
+// );
 
 const CDNURL =
   "https://itzgmdgndusfvggjclwk.supabase.co/storage/v1/object/public/videos/";
@@ -23,7 +21,7 @@ function App() {
   const [url, setUrl] = useState(null);
 
   async function getVideos() {
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseClient.storage
       .from("videos") // videos/
       .list("");
     // data: [video1, video2, video3]
@@ -51,7 +49,7 @@ function App() {
       console.log("Upload!");
     }
 
-    const { error } = await supabase.storage
+    const { error } = await supabaseClient.storage
       .from("videos")
       .upload(uuidv4() + "-" + videoFile.name, videoFile);
 
@@ -69,7 +67,7 @@ function App() {
   async function downloadFile(file) {
     console.log("download file: ", file);
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseClient.storage
       .from("videos")
       .download(file); // get blob
 
@@ -88,38 +86,36 @@ function App() {
   console.log(videos);
 
   return (
-    <Container className="mt-5" style={{ width: "700px" }}>
-      <h1>VideoFeed</h1>
-      <Form.Group className="mb-3 mt-3">
-        <Form.Label>Upload your video here!</Form.Label>
-        {/* <Form.Control type="file" accept="video/mp4" onChange={(e) => uploadFile(e)}/> */}
-        <Form.Control
-          type="file"
-          accept="audio/*,video/*,image/*"
-          onChange={(e) => uploadFile(e)}
-        />
-      </Form.Group>
+    <div className="container">
+      <h1 className="title">VideoFeed</h1>
+      <div className="">
+        <label for="file">
+          Upload your video here! <br />
+          <input
+            id="file"
+            type="file"
+            accept="video/mp4"
+            onChange={(e) => uploadFile(e)}
+            className="fileInput"
+          />
+        </label>
+      </div>
 
-      <Row xs={1} className="g-4">
+      <div className="gallery">
         {videos.map((video) => {
           console.log(video);
           if (video.name === ".emptyFolderPlaceholder") return null;
 
           return (
-            <Col>
-              <Card key={video.name}>
-                <video height="380px" controls>
-                  <source src={CDNURL + video.name} type="video/mp4" />
-                </video>
-              </Card>
-              {/* <Card>
-                <img src={CDNURL + video.name} type="image" height="380" />
-              </Card> */}
-            </Col>
+            // <div className="video-wrapper">
+              <video controls className="video">
+                <source src={CDNURL + video.name} type="video/mp4" />
+              </video>
+            // </div>
           );
         })}
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 }
 
