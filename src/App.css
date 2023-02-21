@@ -37,12 +37,16 @@
   }
 
   .gallery {
-    grid-template-columns: repeat(2, 50vw);
-    row-gap: 0;
+    grid-template-columns: repeat(2, 50%);
+    row-gap: 5px;
+    column-gap: 5px;
   }
 
   .video {
     width: 50vw;
     height: 200px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
   }
 }

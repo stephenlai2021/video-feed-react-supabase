@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-// import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { supabaseClient } from "./supabase/config";
 
-// const supabase = createClient(
-//   "https://itzgmdgndusfvggjclwk.supabase.co",
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0emdtZGduZHVzZnZnZ2pjbHdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzA2NTgwNDYsImV4cCI6MTk4NjIzNDA0Nn0.pNt5W8ccp8TnrKhRaDzYPuVjKrcazjWh06QUMZ0ZC90"
-// );
-
 const CDNURL =
   "https://itzgmdgndusfvggjclwk.supabase.co/storage/v1/object/public/videos/";
-
-// https://ihbkpxujdzyblmtuzwdm.supabase.co/storage/v1/object/public/videos/testfile.mp4
 
 function App() {
   const [videos, setVideos] = useState([]); // [video1, video2, video3]
@@ -101,22 +93,18 @@ function App() {
         </label>
       </div>
 
-      {/* <div className="frame"> */}
-        <div className="gallery">
-          {videos.map((video) => {
-            console.log(video);
-            if (video.name === ".emptyFolderPlaceholder") return null;
+      <div className="gallery">
+        {videos.map((video) => {
+          console.log(video);
+          if (video.name === ".emptyFolderPlaceholder") return null;
 
-            return (
-              // <div className="video-wrapper">
-              <video controls className="video">
-                <source src={CDNURL + video.name} type="video/mp4" />
-              </video>
-              // </div>
-            );
-          })}
-        </div>
-      {/* </div> */}
+          return (
+            <video controls className="video">
+              <source src={CDNURL + video.name} type="video/mp4" />
+            </video>
+          );
+        })}
+      </div>
     </div>
   );
 }
